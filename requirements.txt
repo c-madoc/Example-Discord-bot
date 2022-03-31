@@ -1,0 +1,4 @@
+mongoengine~=0.23.1
+python-dotenv~=0.20.0
+discord.py~=1.7.3
+dnspython~=2.1.0
