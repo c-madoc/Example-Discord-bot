@@ -12,6 +12,5 @@ class Another(commands.Cog):
         self.bot = bot
         self.log = Logger(__name__)
 
-
 def setup(bot) -> None:
     bot.add_cog(Another(bot))
