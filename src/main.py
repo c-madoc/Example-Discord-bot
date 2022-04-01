@@ -23,12 +23,24 @@ class Bot(commands.Bot):
             for file in files:
 
                 # If the file is a python file, try to load it as a cog
-                if file.endswith(".py"):
+                if file.endswith(".py") and file.startswith("cog_"):
+                    file = os.path.join(root, file)
+                    plugin = {"name": "", "path": "", 'split': file.split('\\')}
+
+                    plugin['name'] = plugin['split'][len(plugin['split']) - 1][len("cog_"):-3]
+                    plugin['path'] = file.replace(f"cog_{plugin['name']}.py", "").replace("\\", ".")
+                    cog = f"{plugin['path']}cog_{plugin['name']}"
+
                     try:
-                        self.load_extension(f"cogs.{file.replace('.py', '')}")
-                        self.log.success(f"Loaded {file}")
+                        self.load_extension(cog)
+                        self.log.success(f"{Colors.Foreground.green}Plugin Loaded{Colors.reset}: {plugin['name']}")
                     except Exception as e:
-                        self.log.error(f"Error: {e}")
+                        if Settings.log_verbosity >= Logger.Verbosity.debug:
+                            self.log.error(f"Plugin Failed to Load: {file}")
+
+                elif file.endswith(".py") and not file.startswith("cog_"):
+                    if Settings.log_verbosity >= Logger.Verbosity.debug:
+                        self.log.warning(f"{Colors.Foreground.yellow}Plugin not Loaded{Colors.reset}: {file}")
 
     async def on_connect(self: "Bot") -> None:
         """ Fires when the Discord bot connects to the Discord servers. """
