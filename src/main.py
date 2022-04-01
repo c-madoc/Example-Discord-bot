@@ -1,9 +1,12 @@
 import datetime
 import os
+import platform
 
 import discord
 from discord.ext import commands
 from mongoengine import connect
+from tabulate import tabulate
+
 from helpers.tools.colors import Colors
 from helpers.tools.logger import Logger
 from settings import Settings
@@ -33,14 +36,15 @@ class Bot(commands.Bot):
 
                     try:
                         self.load_extension(cog)
-                        self.log.success(f"{Colors.Foreground.green}Plugin Loaded{Colors.reset}: {plugin['name']}")
+                        self.log.success(f"{Colors.Foreground.green}Cog Loaded{Colors.reset}: {plugin['name']}")
+
                     except Exception as e:
                         if Settings.log_verbosity >= Logger.Verbosity.debug:
                             self.log.error(f"Plugin Failed to Load: {file}")
 
                 elif file.endswith(".py") and not file.startswith("cog_"):
                     if Settings.log_verbosity >= Logger.Verbosity.debug:
-                        self.log.warning(f"{Colors.Foreground.yellow}Plugin not Loaded{Colors.reset}: {file}")
+                        self.log.warning(f"{Colors.Foreground.yellow}Cog not Loaded{Colors.reset}: {file}")
 
     async def on_connect(self: "Bot") -> None:
         """ Fires when the Discord bot connects to the Discord servers. """
@@ -53,8 +57,19 @@ class Bot(commands.Bot):
         await self.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=Settings.activity))
 
     def print_greeting(self: "Bot") -> None:
-        """ Prints a greeting. """
-        self.log.info(f'Attempting to start an instance of {Settings.name}...')
+        """ Prints a greeting on initialization. """
+        info = [
+            [f'⇢ {Colors.bold}Spawned{Colors.reset}', f'{Colors.Foreground.purple}{self.created}{Colors.reset}'],
+            [f'⇢ {Colors.bold}Version{Colors.reset}',
+             f'{Settings.name} ({Colors.Foreground.pink}v{Settings.version}{Colors.reset})[{Colors.Foreground.pink}{Settings.version_name}{Colors.reset}]'],
+            [f'⇢ {Colors.bold}Library{Colors.reset}',
+             f'Discord.py ({Colors.Foreground.pink}v{discord.__version__}{Colors.reset})'],
+            [f'⇢ {Colors.bold}Platform{Colors.reset}',
+             f'Python ({Colors.Foreground.pink}v{platform.python_version()}{Colors.reset})'],
+            [f'⇢ {Colors.bold}System{Colors.reset}',
+             f'{platform.system()} ({Colors.Foreground.pink}{platform.version()}{Colors.reset})']
+        ]
+        self.log.info(f'Attempting to start an instance of {Settings.name}...\n' + tabulate(info))
 
     def start_bot(self: "Bot") -> None:
         """ Connects the bot to a MongoDB cluster, loads all the plugins, and starts the bot. """
