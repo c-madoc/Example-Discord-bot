@@ -22,19 +22,24 @@ class Bot(commands.Bot):
 
     def load_plugins(self):
         """ Loads all plugins in the cogs folder. """
+        file_prefix = "cog_"
         for root, dirs, files in os.walk("cogs"):
             for file in files:
 
                 # If the file is a python file, try to load it as a cog
-                if file.endswith(".py") and file.startswith("cog_"):
+                if file.endswith(".py") and file.startswith(file_prefix):
+
+                    # Set the file to include the root so we can find where the cog is when attempting to load
                     file = os.path.join(root, file)
                     plugin = {"name": "", "path": "", 'split': file.split('\\')}
 
+                    # Split up the file properties so we can call the correct path when loading cog
                     plugin['name'] = plugin['split'][len(plugin['split']) - 1][len("cog_"):-3]
                     plugin['path'] = file.replace(f"cog_{plugin['name']}.py", "").replace("\\", ".")
-                    cog = f"{plugin['path']}cog_{plugin['name']}"
+                    cog = f"{plugin['path']}{file_prefix}{plugin['name']}"
 
                     try:
+                        # Actually load the cog
                         self.load_extension(cog)
                         self.log.success(f"{Colors.Foreground.green}Cog Loaded{Colors.reset}: {plugin['name']}")
 
@@ -42,7 +47,8 @@ class Bot(commands.Bot):
                         if Settings.log_verbosity >= Logger.Verbosity.debug:
                             self.log.error(f"Plugin Failed to Load: {file}")
 
-                elif file.endswith(".py") and not file.startswith("cog_"):
+                # If there is a .py file but doesn't contain the file prefix, return a warning that it wasn't loaded
+                elif file.endswith(".py") and not file.startswith(file_prefix):
                     if Settings.log_verbosity >= Logger.Verbosity.debug:
                         self.log.warning(f"{Colors.Foreground.yellow}Cog not Loaded{Colors.reset}: {file}")
 
