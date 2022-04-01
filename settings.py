@@ -9,7 +9,7 @@ dotenv.load_dotenv()
 
 class Settings:
     name = "Test Bot"
-    version = "0.1"
+    version = "0.2"
     version_name = "McTest"
     server = 'test'
     activity = "Testing"

@@ -2,7 +2,7 @@
 
 ****
 
-# Version: 0.1
+# Version: 0.2
 
 A semi-advanced Discord bot including cogs, 
 examples of database management, and basic command registration.
