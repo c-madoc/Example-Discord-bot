@@ -25,5 +25,5 @@ Highly commented for readability and understanding.
 - `users`: Gets all users from the database
 
 ### Setting up:
-- Will need a `.env` file in the `src/` folder to store `TOKEN` and `DB`
+- Include a `.env` file in root folder and store `TOKEN` (your Discord Bot Token) and `DB` (Your MongoDB Connection String)
 - All requirements in `requirements.txt`
