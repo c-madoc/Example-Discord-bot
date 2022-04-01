@@ -9,6 +9,7 @@ from tabulate import tabulate
 
 from helpers.tools.colors import Colors
 from helpers.tools.logger import Logger
+from helpers.tools.utils import SystemUtils
 from settings import Settings
 
 
@@ -31,11 +32,20 @@ class Bot(commands.Bot):
 
                     # Set the file to include the root so we can find where the cog is when attempting to load
                     file = os.path.join(root, file)
-                    plugin = {"name": "", "path": "", 'split': file.split('\\')}
+                    plugin = {"name": "", "path": "", "split": []}
 
-                    # Split up the file properties so we can call the correct path when loading cog
-                    plugin['name'] = plugin['split'][len(plugin['split']) - 1][len("cog_"):-3]
-                    plugin['path'] = file.replace(f"cog_{plugin['name']}.py", "").replace("\\", ".")
+                    # If we are on a Windows system
+                    if SystemUtils().get_system() == SystemUtils().windows:
+                        plugin['split'] = file.split('\\')
+                        plugin['name'] = plugin['split'][len(plugin['split']) - 1][len("cog_"):-3]
+                        plugin['path'] = file.replace(f"cog_{plugin['name']}.py", "").replace("\\", ".")
+
+                    # If we are on a Linux system
+                    else:
+                        plugin['split'] = file.split('/')
+                        plugin['name'] = plugin['split'][len(plugin['split']) - 1][len(file_prefix):-3]
+                        plugin['path'] = file.replace(f"{file_prefix}{plugin['name']}.py", "").replace("/", ".")
+
                     cog = f"{plugin['path']}{file_prefix}{plugin['name']}"
 
                     try:

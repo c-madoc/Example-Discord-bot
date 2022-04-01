@@ -3,8 +3,8 @@ from datetime import datetime
 from mongoengine import *
 from mongoengine.context_managers import *
 
-from src.helpers.tools.logger import Logger
-from src.settings import Settings
+from helpers.tools.logger import Logger
+from settings import Settings
 
 log = Logger(__name__)
 

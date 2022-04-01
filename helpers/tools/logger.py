@@ -8,7 +8,7 @@
 # -------------------------------------------------------------------------
 import os, sys, discord.ext.commands
 from datetime import datetime
-from src.helpers.tools.colors import Colors
+from helpers.tools.colors import Colors
 
 # Obtains the current working directory and appends the log folder and current datetime as the log file.
 _default_log_file = f"{sys.path[0]}\\logs\\{datetime.now().strftime('%Y-%m-%d')}.txt"

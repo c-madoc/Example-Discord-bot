@@ -1,4 +1,4 @@
-from src.helpers.database.connection import *
+from helpers.database.connection import *
 
 
 class Users:
